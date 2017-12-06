@@ -1,28 +1,15 @@
 "use strict"; // ES6
 
 // Listen for keypresses and call the handler
-window.addEventListener('keyup', e => {
-  switch(e.key){
-    case '4':
-      CommanderBox.handle('key');
-      break;
-    case 'b':
-      CommanderBox.handle('1');
-      break;
-    case '7':
-      CommanderBox.handle('2');
-      break;
-    case 'f':
-      CommanderBox.handle('3');
-      break;
-    case 'z':
-      CommanderBox.handle('a');
-      break;
-    case 'o':
-      CommanderBox.handle('b');
-      break;
-  }
-});
+const keyBindings = {
+  '4': 'key',
+  'b': '1',
+  '7': '2',
+  'f': '3',
+  'z': 'a',
+  'o': 'b'
+}
+window.addEventListener('keyup', e => CommanderBox.handle(keyBindings[e.key]));
 
 const CommanderBox = {
   output: document.querySelector('.output'),
@@ -40,7 +27,7 @@ const CommanderBox = {
   screen: (screen)=>{
     CommanderBox.off();
     CommanderBox.clear();
-    fetch(`screens/${screen}.js`).then(response => {
+    fetch(`screens/${screen}.js?${new Date().getTime()}`).then(response => {
       response.text().then(body => {
         eval(body);
       });
