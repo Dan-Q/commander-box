@@ -1,8 +1,6 @@
 "use strict"; // ES6
 
-write('System Activated', 'h1');
-write('Turn key to authenticate.', 'p');
+CommanderBox.write('System Activated', 'h1');
+CommanderBox.write('Turn key to authenticate.', 'p');
 
-on('key', ()=>{
-  alert('key turned');
-});
+CommanderBox.on('key', ()=> CommanderBox.screen('menu'));

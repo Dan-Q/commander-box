@@ -1,77 +1,80 @@
 "use strict"; // ES6
 
-const output = document.querySelector('.output');
-let buffer = [];
-let handlers = {};
-
 // Listen for keypresses and call the handler
 window.addEventListener('keyup', e => {
   switch(e.key){
     case '4':
-      handle('key');
+      CommanderBox.handle('key');
       break;
     case 'b':
-      handle('1');
+      CommanderBox.handle('1');
       break;
     case '7':
-      handle('2');
+      CommanderBox.handle('2');
       break;
     case 'f':
-      handle('3');
+      CommanderBox.handle('3');
       break;
     case 'z':
-      handle('a');
+      CommanderBox.handle('a');
       break;
     case 'o':
-      handle('b');
+      CommanderBox.handle('b');
       break;
   }
 });
 
-// Adds text to the buffer to be written to the page
-const write = (text, tag)=>{
-  const element = document.createElement(tag);
-  output.appendChild(element);
-  text.match(/ *./g).forEach(letter => buffer.push([element, letter]));
-}
+const CommanderBox = {
+  output: document.querySelector('.output'),
+  buffer: [],
+  handlers: {},
 
-// Loads a screen (js file)
-const screen = (screen)=>{
-  fetch(`screens/${screen}.js`).then(response => {
-    response.text().then(body => {
-      off();
-      eval(body);
+  // Adds text to the buffer to be written to the page
+  write: (text, tag)=>{
+    const element = document.createElement(tag);
+    CommanderBox.output.appendChild(element);
+    text.match(/ *./g).forEach(letter => CommanderBox.buffer.push([element, letter]));
+  },
+
+  // Loads a screen (js file)
+  screen: (screen)=>{
+    CommanderBox.off();
+    CommanderBox.clear();
+    fetch(`screens/${screen}.js`).then(response => {
+      response.text().then(body => {
+        eval(body);
+      });
     });
-  });
+  },
+
+  // Clears the screen
+  clear: ()=>{
+    CommanderBox.output.innerHTML = '';
+  },
+
+  // Handles a (button/key/switch) event
+  handle: (button)=>{
+    const eventHandler = CommanderBox.handlers[button];
+    if(typeof(eventHandler) == 'undefined') return;
+    eventHandler();
+  },
+
+  // Disables all handlers
+  off: ()=>{
+    CommanderBox.handlers = {};
+  },
+
+  // Adds a handler for a button
+  on: (button, func)=>{
+    CommanderBox.handlers[button] = func;
+  }
 }
 
-const clear = ()=>{
-  output.innerHTML = '';
-}
-
-// Handles a (button/key/switch) event
-const handle = (button)=>{
-  const eventHandler = handlers[button];
-  if(typeof(eventHandler) == 'undefined') return;
-  eventHandler();
-}
-
-// Disables all handlers
-const off = ()=>{
-  handlers = {};
-}
-
-// Adds a handler for a button
-const on = (button, func)=>{
-  handlers[button] = func;
-}
+CommanderBox.screen('start');
 
 // Every X, writes more text
 setInterval(()=>{
-  const next = buffer.shift()
+  const next = CommanderBox.buffer.shift()
   if(typeof(next) == 'undefined') return;
   next[0].innerText += next[1];
 }, 50);
-
-screen('start');
-
