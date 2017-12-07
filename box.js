@@ -23,6 +23,11 @@ const CommanderBox = {
     text.match(/ *./g).forEach(letter => CommanderBox.buffer.push([element, letter]));
   },
 
+  // Instantly adds HTML
+  writeHTML: (html)=>{
+    CommanderBox.output.innerHTML += html;
+  },
+
   // Loads a screen (js file)
   screen: (screen)=>{
     CommanderBox.off();
