@@ -1,0 +1,11 @@
+{
+  "name": "CommanderBox",
+  "main": "index.html",
+  "version": "0.1.0",
+  "window": {
+    "title": "Commander Box",
+    "fullscreen": true,
+    "always-on-top": true,
+    "kiosk": true
+  }
+}
